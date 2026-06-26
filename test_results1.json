@@ -1,0 +1,12 @@
+{
+  "PER": 2.2,
+  "WER": 2.2,
+  "WER_without_deletions": 2.16,
+  "train_samples": 79396,
+  "val_samples": 5000,
+  "test_samples": 5000,
+  "epochs": 15,
+  "effective_batch_size": 16,
+  "training_time_min": 716.5,
+  "vocab_size": 80
+}
