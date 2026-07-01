@@ -3,6 +3,7 @@
 An end-to-end, speaker-independent automatic speech recognition (ASR) system designed to evaluate Quranic recitation and detect Tajweed pronunciation errors. The system is built by fine-tuning the **Wav2Vec2-XLS-R-300M** architecture using connectionist temporal classification (CTC) loss, mapping raw audio waveforms directly to an expanded phonetic vocabulary of **80 tokens** that represent standard Arabic phonemes and Tajweed rules.
 
 ---
+Checkpoints link: https://drive.google.com/file/d/1V8ap8FEzSXxfqufCke3YglPWISyV-wuA/view?usp=sharing
 
 ## 📂 Project Directory Structure
 
