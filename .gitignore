@@ -1,0 +1,43 @@
+# Python virtual environments
+backend/.venv/
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/tilawah.db
+
+# Flutter build output
+frontend/build/
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/flutter_*.log
+
+# One-time scripts
+frontend/fetch_surahs.py
+frontend/replace_surahs.py
+frontend/rewrite.py
+frontend/update_mushaf.py
+frontend/surahs_dart.txt
+
+# Secrets & Configurations
+.env
+backend/.env
+backend/firebase_service_account.json
+frontend/android/app/google-services.json
+
+# ML Models
+model/
+backend/models/
+
+# Logs
+backend/*.log
+*.log
+
+# Scratch / temp
+scratch/
+
+# Pytest
+backend/.pytest_cache/
+.pytest_cache/
+

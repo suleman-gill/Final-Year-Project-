@@ -1,0 +1,44 @@
+# ── Core Framework ────────────────────────────────────────────
+fastapi>=0.109.0
+uvicorn>=0.27.0
+websockets>=12.0
+python-multipart>=0.0.6
+
+# ── Security & Auth ──────────────────────────────────────────
+passlib[bcrypt]>=1.7.4
+python-jose[cryptography]>=3.3.0
+
+# ── Database ─────────────────────────────────────────────────
+sqlalchemy>=2.0.25
+psycopg2-binary>=2.9.9
+alembic>=1.13.0
+
+# ── Configuration & Validation ───────────────────────────────
+pydantic>=2.5.3
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.1
+
+# ── Rate Limiting ────────────────────────────────────────────
+slowapi>=0.1.9
+
+# ── ML / Audio Processing ───────────────────────────────────
+numpy>=1.26.0
+scipy>=1.12.0
+httpx>=0.27.0
+urllib3==2.2.1
+redis
+python-json-logger
+pytest
+sentry-sdk[fastapi]
+soundfile>=0.12
+pydub>=0.25.1
+imageio-ffmpeg>=0.5.0
+# ── ML / Wav2Vec2 ────────────────────────────────────────────
+torch>=2.4.0
+torchaudio>=2.4.0
+transformers>=4.40
+safetensors>=0.4.0
+firebase-admin==6.5.0
+jiwer>=3.0
+pyarabic>=0.6
+
