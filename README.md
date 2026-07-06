@@ -1,122 +1,74 @@
-<p align="center">
-  <img src="docs/assets/banner.png" alt="Tilawah AI Banner" width="100%" />
-</p>
+# 🕌 Tilawah AI
 
-<h1 align="center">🕌 Tilawah AI</h1>
+**AI-powered Quran recitation correction with Tajweed analysis**
 
-<p align="center">
-  <strong>AI-Powered Quran Recitation Correction with Tajweed Analysis</strong>
-</p>
+![Python 3.11+](https://img.shields.io/badge/python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)
+![Flutter 3.2+](https://img.shields.io/badge/flutter-3.2+-02569B?style=flat-square&logo=flutter&logoColor=white)
+![FastAPI](https://img.shields.io/badge/fastapi-0.109+-009688?style=flat-square&logo=fastapi&logoColor=white)
+![PyTorch 2.4+](https://img.shields.io/badge/pytorch-2.4+-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
 
-<p align="center">
-  <a href="#features"><img src="https://img.shields.io/badge/Features-✨_See_Below-2ea44f?style=for-the-badge" alt="Features"></a>
-  <a href="#quick-start"><img src="https://img.shields.io/badge/Quick_Start-🚀_Get_Running-blue?style=for-the-badge" alt="Quick Start"></a>
-  <a href="#api-reference"><img src="https://img.shields.io/badge/API-📡_Reference-orange?style=for-the-badge" alt="API Reference"></a>
-</p>
+A full-stack system that listens to a user's Quran recitation and gives real-time, word-level Tajweed feedback, powered by a fine-tuned Wav2Vec2 (XLS-R 300M) model.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/flutter-3.2+-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter 3.2+">
-  <img src="https://img.shields.io/badge/fastapi-0.109+-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
-  <img src="https://img.shields.io/badge/pytorch-2.4+-EE4C2C?style=flat-square&logo=pytorch&logoColor=white" alt="PyTorch 2.4+">
-  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs Welcome">
-</p>
-
-<p align="center">
-  <em>Recite. Correct. Perfect. — A full-stack AI system that listens to your Quran recitation and provides real-time, word-level Tajweed feedback powered by a fine-tuned Wav2Vec2 (XLS-R 300M) model.</em>
-</p>
+**Final Year Project** — submitted in partial fulfillment of a Bachelor's degree.
 
 ---
 
-## 📖 Overview
+## Overview
 
-**Tilawah AI** is an end-to-end Quran recitation correction platform that combines deep learning speech recognition with Tajweed rule analysis to help users improve their recitation. The system fine-tunes [XLS-R 300M](https://huggingface.co/facebook/wav2vec2-xls-r-300m) on ~120k Quranic audio samples labeled with **53+ custom Tajweed phoneme tokens** — covering rules like Ghunna, Idgham, Ikhfa, Madd, Qalqalah, and more.
+Tilawah AI fine-tunes [XLS-R 300M](https://huggingface.co/facebook/wav2vec2-xls-r-300m) on ~120k Quranic audio samples labeled with 53+ custom Tajweed phoneme tokens — covering rules like Ghunna, Idgham, Ikhfa, Madd, and Qalqalah.
 
 ### How It Works
 
 ```
 ┌─────────────┐    WebSocket     ┌──────────────────┐    CTC Decode    ┌──────────────────┐
-│  Flutter App │ ──── audio ───► │  FastAPI Backend  │ ──────────────► │  Wav2Vec2 Model  │
-│  (Mobile)    │ ◄── results ─── │  + G2P Pipeline   │ ◄── phonemes ── │  (XLS-R 300M)    │
+│ Flutter App │ ──── audio ───► │  FastAPI Backend │ ──────────────► │  Wav2Vec2 Model  │
+│ (Mobile)    │ ◄── results ─── │  + G2P Pipeline  │ ◄── phonemes ── │  (XLS-R 300M)    │
 └─────────────┘                  └──────────────────┘                  └──────────────────┘
                                          │
                                    ┌─────┴─────┐
-                                   │  jiwer     │
-                                   │  Alignment │
+                                   │  jiwer    │
+                                   │ Alignment │
                                    └─────┬─────┘
                                          │
-                                   Per-word Tajweed
-                                   feedback + scores
+                                  Per-word Tajweed
+                                  feedback + scores
 ```
 
-1. **Pick a Surah** → Full 114-surah Quran text (Tanzil Uthmani script with diacritics)
-2. **Recite verse-by-verse** → Audio streams to the backend over WebSocket in real-time
-3. **AI processes your recitation** → Wav2Vec2 decodes audio into Tajweed phoneme tokens, aligns against expected sequence via `jiwer`
-4. **Get instant feedback** → Each word is marked ✅ correct or ❌ incorrect with specific Tajweed error types and improvement tips
+1. **Pick a Surah** — full 114-surah Quran text (Tanzil Uthmani script with diacritics).
+2. **Recite verse by verse** — audio streams to the backend over WebSocket in real time.
+3. **The model processes it** — Wav2Vec2 decodes audio into Tajweed phoneme tokens, aligned against the expected sequence via `jiwer`.
+4. **Instant feedback** — each word marked correct or incorrect, with the specific Tajweed rule and a short tip.
 
 ---
 
-## ✨ Features
+## Features
 
-<table>
-<tr>
-<td width="50%">
+**AI Recitation Correction**
+Real-time speech recognition over WebSocket, word-level accuracy scoring, Tajweed rule violation detection, phoneme-level alignment, and on-demand correction mid-session.
 
-### 🎙️ AI Recitation Correction
-- Real-time speech recognition via WebSocket
-- Word-level accuracy scoring
-- Tajweed rule violation detection (Ghunna, Idgham, Ikhfa, Madd, Qalqalah, etc.)
-- Phoneme-level alignment and error analysis
-- On-demand correction without ending session
+**Quran Reader**
+Full 114-surah offline text, Tajweed color-coded rendering, Uthmani script with diacritics, Scheherazade New Arabic typography.
 
-</td>
-<td width="50%">
+**Islamic Tools**
+Prayer times based on device GPS, Qibla compass direction finder.
 
-### 📖 Quran Reader
-- Complete 114-surah Quran text (offline)
-- Tajweed color-coded rendering
-- Uthmani script with full diacritics
-- Scheherazade New Arabic typography
-- Surah-by-surah navigation
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-### 🕐 Islamic Tools
-- Prayer times based on device GPS
-- Qibla compass direction finder
-- Location-aware calculations
-
-</td>
-<td width="50%">
-
-### 📊 Progress Tracking
-- Daily streak & XP gamification system
-- Session history with detailed results
-- Personal recitation statistics
-- Dark & light theme support
-
-</td>
-</tr>
-</table>
+**Progress Tracking**
+Daily streak and XP system, session history, dark/light themes.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 graph TB
-    subgraph Client["📱 Flutter Mobile App"]
+    subgraph Client["Flutter Mobile App"]
         UI[Screens & Widgets]
         RE[Recitation Engine<br/>WebSocket Client]
         QD[Quran Data Service<br/>Offline JSON]
         HV[Hive Local Storage]
     end
 
-    subgraph Server["⚡ FastAPI Backend"]
+    subgraph Server["FastAPI Backend"]
         WS[WebSocket Endpoint]
         TA[Tajweed Analysis Service]
         G2P[G2P Pipeline]
@@ -125,7 +77,7 @@ graph TB
         RD[(Redis<br/>Session Store)]
     end
 
-    subgraph ML["🧠 ML Pipeline"]
+    subgraph ML["ML Pipeline"]
         W2V[Wav2Vec2-XLS-R-300M<br/>Fine-tuned CTC]
         VOC[53+ Tajweed Phoneme Vocab]
         JW[jiwer Alignment]
@@ -144,23 +96,23 @@ graph TB
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 <details>
 <summary><strong>Backend</strong> — Python / FastAPI</summary>
 
 | Layer | Technology |
 |:---|:---|
-| **Framework** | FastAPI 0.109+ with Uvicorn |
-| **ML Model** | Wav2Vec2ForCTC (XLS-R 300M), PyTorch 2.4+, Transformers 4.40+ |
-| **Real-time** | WebSocket via `websockets` 12+ |
-| **Database** | SQLAlchemy 2.0 + Alembic (SQLite dev / PostgreSQL prod) |
-| **Auth** | JWT (`python-jose`), bcrypt (`passlib`), Firebase Admin SDK |
-| **Session Store** | Redis (with in-memory fallback) |
-| **Audio** | soundfile, pydub, imageio-ffmpeg, librosa (16kHz resampling) |
-| **Tajweed** | Custom G2P pipeline, jiwer phoneme alignment, pyarabic |
-| **Rate Limiting** | slowapi |
-| **Monitoring** | Sentry SDK (optional) |
+| Framework | FastAPI 0.109+ with Uvicorn |
+| ML Model | Wav2Vec2ForCTC (XLS-R 300M), PyTorch 2.4+, Transformers 4.40+ |
+| Real-time | WebSocket via `websockets` 12+ |
+| Database | SQLAlchemy 2.0 + Alembic (SQLite dev / PostgreSQL prod) |
+| Auth | JWT (`python-jose`), bcrypt (`passlib`), Firebase Admin SDK |
+| Session Store | Redis (with in-memory fallback) |
+| Audio | soundfile, pydub, imageio-ffmpeg, librosa (16kHz resampling) |
+| Tajweed | Custom G2P pipeline, jiwer phoneme alignment, pyarabic |
+| Rate Limiting | slowapi |
+| Monitoring | Sentry SDK (optional) |
 
 </details>
 
@@ -169,16 +121,16 @@ graph TB
 
 | Layer | Technology |
 |:---|:---|
-| **Framework** | Flutter 3.2+ (Dart) |
-| **State** | Riverpod |
-| **Navigation** | go_router |
-| **HTTP** | Dio with JWT interceptor |
-| **WebSocket** | web_socket_channel |
-| **Audio** | record (mic capture), just_audio (playback) |
-| **Storage** | Hive, flutter_secure_storage |
-| **Auth** | Firebase Auth + Firebase Core |
-| **UI** | Google Fonts (Scheherazade), Lottie, Shimmer, flutter_animate |
-| **Quran Text** | Offline JSON — Tanzil Uthmani (`quran_complete.json`) |
+| Framework | Flutter 3.2+ (Dart) |
+| State | Riverpod |
+| Navigation | go_router |
+| HTTP | Dio with JWT interceptor |
+| WebSocket | web_socket_channel |
+| Audio | record (mic capture), just_audio (playback) |
+| Storage | Hive, flutter_secure_storage |
+| Auth | Firebase Auth + Firebase Core |
+| UI | Google Fonts (Scheherazade), Lottie, Shimmer, flutter_animate |
+| Quran Text | Offline JSON — Tanzil Uthmani (`quran_complete.json`) |
 
 </details>
 
@@ -187,11 +139,11 @@ graph TB
 
 | Component | Details |
 |:---|:---|
-| **Base Model** | `facebook/wav2vec2-xls-r-300m` |
-| **Training** | HuggingFace Trainer, CTC loss |
-| **Dataset** | ~120k WAV samples (EveryAyah, abdulsamad reciter) |
-| **Phoneme Vocab** | 53+ custom Tajweed tokens (Qalqalah, Madd variants, Noon/Meem rules) |
-| **Evaluation** | PER (Phoneme Error Rate), WER, jiwer |
+| Base Model | `facebook/wav2vec2-xls-r-300m` |
+| Training | HuggingFace Trainer, CTC loss |
+| Dataset | ~120k WAV samples (EveryAyah, Abdulsamad reciter) |
+| Phoneme Vocab | 53+ custom Tajweed tokens (Qalqalah, Madd variants, Noon/Meem rules) |
+| Evaluation | PER (Phoneme Error Rate), WER, jiwer |
 
 </details>
 
@@ -200,16 +152,16 @@ graph TB
 
 - Docker + docker-compose (PostgreSQL 15, Redis 7)
 - GitHub Actions CI (`pytest` on push/PR)
-- Production & development Dockerfiles
+- Separate dev and production Dockerfiles
 
 </details>
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-tilawah-ai/
+DeepSpeech-Quran/
 ├── backend/
 │   ├── app/
 │   │   ├── main.py                  # FastAPI entry point, lifespan events
@@ -233,20 +185,20 @@ tilawah-ai/
 │   │   ├── config/                  # Routes, themes, providers
 │   │   ├── core/                    # API client, local storage
 │   │   ├── features/                # Auth & recitation state management
-│   │   ├── screens/                 # All app screens (auth, quran, recitation, etc.)
+│   │   ├── screens/                 # All app screens
 │   │   ├── services/                # Quran data, prayer time services
 │   │   └── widgets/                 # Reusable UI components
 │   ├── assets/                      # Quran JSON, fonts, images
 │   └── pubspec.yaml
 │
-├── docker-compose.yml               # Production stack (Backend + PostgreSQL + Redis)
+├── docker-compose.yml               # Backend + PostgreSQL + Redis
 ├── .github/workflows/               # CI pipeline
 └── train_local.py                   # Model training script
 ```
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -255,276 +207,192 @@ tilawah-ai/
 | Python | 3.11+ | Backend runtime |
 | Flutter SDK | 3.2+ | Mobile/web frontend |
 | ffmpeg | Latest | Audio format conversion |
-| GPU (NVIDIA) | Optional | Recommended for training; inference works on CPU |
+| NVIDIA GPU | Optional | Recommended for training; inference works on CPU |
 
-### 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Faisal-Riaz-1/DeepSpeech-Quran.git
 cd DeepSpeech-Quran
 ```
 
-### 2. Backend Setup
+### 2. Backend setup
 
 ```bash
 cd backend
 
-# Create virtual environment
 python -m venv .venv
 source .venv/bin/activate        # Linux/macOS
 # .venv\Scripts\activate         # Windows
 
-# Install dependencies
 pip install -r requirements.txt
 
-# Configure environment
 cp .env.example .env
 # Edit .env — set DATABASE_URL and JWT_SECRET_KEY at minimum
 
-# Run database migrations (PostgreSQL)
-alembic upgrade head
+alembic upgrade head             # only needed for PostgreSQL
 
-# Start the server
 python run.py
-# ✅ Server running at http://0.0.0.0:8000
+# Server running at http://0.0.0.0:8000
 ```
 
-### 3. Frontend Setup
+### 3. Frontend setup
 
 ```bash
 cd frontend
-
-# Install dependencies
 flutter pub get
-
-# Verify setup
 flutter doctor
-
-# Run on connected device/emulator
 flutter run
 ```
 
-### 4. Model Weights
+### 4. Model weights
 
-The trained Wav2Vec2 checkpoint goes in `backend/models/tajweed_model/`. This directory is gitignored.
+The trained Wav2Vec2 checkpoint goes in `backend/models/tajweed_model/` (gitignored). Either train it yourself (see [Training](#training-the-model)) or copy in an existing checkpoint, then set:
 
-**Option A:** Train the model yourself (see [Training](#-training-the-model))
-
-**Option B:** Copy an existing checkpoint into the directory
-
-Then set in your `.env`:
 ```env
 MODEL_PATH=models/tajweed_model/final
 ```
 
-> [!NOTE]
-> Without a model checkpoint, the backend falls back to `FallbackCalculatedEngine` — a deterministic audio-energy heuristic useful only for UI testing, not real speech recognition.
+> Without a model checkpoint, the backend falls back to a deterministic audio-energy heuristic — useful for UI testing, not real speech recognition.
 
-### 5. Docker (Production)
+### 5. Docker (all services)
 
 ```bash
-# From repo root — spins up Backend + PostgreSQL + Redis
 docker-compose up --build
-
 # Backend → :8000  |  PostgreSQL → :5432  |  Redis → :6379
 ```
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
-### Backend Environment Variables
-
-Create `backend/.env` from `.env.example`:
+### Backend (`backend/.env`)
 
 | Variable | Required | Default | Description |
 |:---|:---:|:---|:---|
-| `DATABASE_URL` | ✅ | `sqlite:///./tilawah.db` | SQLAlchemy connection string |
-| `JWT_SECRET_KEY` | ✅ | — | JWT signing secret (≥32 chars in production) |
-| `MODEL_PATH` | — | — | Path to fine-tuned Wav2Vec2 checkpoint |
-| `REDIS_URL` | — | `redis://localhost:6379` | Redis connection URL |
-| `ENVIRONMENT` | — | `development` | `development` or `production` |
-| `RESEND_API_KEY` | — | — | For sending OTP emails |
-| `GOOGLE_CLIENT_ID` | — | — | Google OAuth client ID |
-| `SENTRY_DSN` | — | — | Sentry error tracking DSN |
+| `DATABASE_URL` | Yes | `sqlite:///./tilawah.db` | SQLAlchemy connection string |
+| `JWT_SECRET_KEY` | Yes | — | JWT signing secret (32+ chars in production) |
+| `MODEL_PATH` | No | — | Path to fine-tuned Wav2Vec2 checkpoint |
+| `REDIS_URL` | No | `redis://localhost:6379` | Redis connection URL |
+| `ENVIRONMENT` | No | `development` | `development` or `production` |
+| `RESEND_API_KEY` | No | — | For sending OTP emails |
+| `GOOGLE_CLIENT_ID` | No | — | Google OAuth client ID |
+| `SENTRY_DSN` | No | — | Sentry error tracking DSN |
 
-### Frontend Build-Time Variables
+### Frontend (build-time)
 
-Passed via `--dart-define` at build time:
-
-| Variable | Default | Description |
-|:---|:---|:---|
-| `API_BASE_URL` | localtunnel fallback | Backend server URL |
+| Variable | Description |
+|:---|:---|
+| `API_BASE_URL` | Backend server URL, passed via `--dart-define` |
 
 ```bash
-# Example: custom backend URL
 flutter run --dart-define=API_BASE_URL=http://192.168.1.100:8000
 ```
 
 ---
 
-## 📡 API Reference
+## API Reference
 
-### REST Endpoints
+### REST
 
 | Method | Endpoint | Auth | Description |
 |:---:|:---|:---:|:---|
-| `POST` | `/api/auth/register` | ❌ | Create a new account |
-| `POST` | `/api/auth/login` | ❌ | Login, returns JWT |
-| `GET` | `/api/auth/me` | ✅ | Get current user profile |
-| `POST` | `/api/auth/forgot-password` | ❌ | Request password reset OTP |
-| `POST` | `/api/auth/verify-otp` | ❌ | Verify OTP code |
-| `POST` | `/api/auth/reset-password` | ❌ | Reset password with OTP |
-| `GET` | `/api/audio/word/{surah}/{ayah}/{word_index}` | ✅ | Word-by-word Alafasy audio (cached CDN proxy) |
-| `GET` | `/api/audio/demo/audio?surah=1&ayah=1` | ❌ | Demo recitation audio |
-| `GET` | `/api/health` | ❌ | Health check (DB, Redis, model status) |
+| POST | `/api/auth/register` | No | Create account |
+| POST | `/api/auth/login` | No | Login, returns JWT |
+| GET | `/api/auth/me` | Yes | Current user profile |
+| POST | `/api/auth/forgot-password` | No | Request OTP |
+| POST | `/api/auth/verify-otp` | No | Verify OTP |
+| POST | `/api/auth/reset-password` | No | Reset password with OTP |
+| GET | `/api/audio/word/{surah}/{ayah}/{word_index}` | Yes | Cached word-by-word audio |
+| GET | `/api/audio/demo/audio?surah=1&ayah=1` | No | Demo recitation audio |
+| GET | `/api/health` | No | Health check (DB, Redis, model status) |
 
-### WebSocket Protocol
+### WebSocket
 
 **Endpoint:** `ws://localhost:8000/ws/recitation`
 
 ```
-1. AUTH        →  { "type": "auth", "token": "<JWT>" }
-               ←  Auth confirmation
+1. AUTH     →  { "type": "auth", "token": "<JWT>" }
+            ←  Auth confirmation
 
-2. START       →  { "type": "start_session", "surahNum": 1, "ayahNum": 1, "words": [...] }
-               ←  { "type": "session_ready", "sessionId": "..." }
+2. START    →  { "type": "start_session", "surahNum": 1, "ayahNum": 1, "words": [...] }
+            ←  { "type": "session_ready", "sessionId": "..." }
 
-3. RECITE      →  { "type": "verse_audio", "sessionId": "...", "verseIndex": 1,
-                     "expectedWords": [...], "audioBase64": "..." }
-               ←  { "type": "verse_result", "words": [
-                       { "word": "بِسْمِ", "correct": true, "score": 0.95,
-                         "tajweedRules": ["KASRA"], "feedback": null },
-                       { "word": "ٱللَّهِ", "correct": false, "score": 0.62,
-                         "tajweedRules": ["MADD"], "feedback": "Focus on Madd elongation" }
-                     ] }
+3. RECITE   →  { "type": "verse_audio", "sessionId": "...", "verseIndex": 1,
+                  "expectedWords": [...], "audioBase64": "..." }
+            ←  { "type": "verse_result", "words": [
+                    { "word": "...", "correct": true,  "score": 0.95, "tajweedRules": ["KASRA"] },
+                    { "word": "...", "correct": false, "score": 0.62, "tajweedRules": ["MADD"],
+                      "feedback": "Focus on Madd elongation" }
+                ] }
 
-4. END         →  { "type": "end_session", "sessionId": "..." }
-               ←  Session summary with overall stats
+4. END      →  { "type": "end_session", "sessionId": "..." }
+            ←  Session summary with overall stats
 ```
 
 ---
 
-## 🧠 Training the Model
-
-The training script fine-tunes XLS-R 300M on the EveryAyah dataset with custom Tajweed phoneme labels.
+## Training the Model
 
 ```bash
-# Full training run (~120k samples, 15 epochs)
-python train_local.py --epochs 15 --max-train 120000
-
-# Quick smoke test
-python train_local.py --epochs 1 --max-train 5000
-
-# Custom configuration
+python train_local.py --epochs 15 --max-train 120000   # full run
+python train_local.py --epochs 1 --max-train 5000       # smoke test
 python train_local.py --output-dir ./checkpoints/my_run --lr 1e-4
 ```
 
-### Training Requirements
-
 | Requirement | Details |
 |:---|:---|
-| **Dataset** | `data/everyayah_full/` — WAV files + train/dev/test CSVs |
-| **Vocab** | `data/everyayah_full/vocab_phoneme.json` — 53+ Tajweed tokens |
-| **GPU** | ≥12 GB VRAM recommended (tested on RTX 4080) |
-| **Output** | `<output-dir>/final/` — model weights + `test_results.json` (PER, WER) |
+| Dataset | `data/everyayah_full/` — WAV files + train/dev/test CSVs |
+| Vocab | `data/everyayah_full/vocab_phoneme.json` — 53+ Tajweed tokens |
+| GPU | 12GB+ VRAM recommended (tested on RTX 4080) |
+| Output | `<output-dir>/final/` — model weights + `test_results.json` (PER, WER) |
 
-### Tajweed Phoneme Vocabulary
-
-The model uses a custom vocabulary of 53+ tokens that encode both standard Arabic phonemes and Tajweed rule markers:
-
-```
-Standard:  ALEF  BEH  TEH  THEH  JEEM  HAH  KHAH  DAL  ...
-Diacritics: FATHA  KASRA  DAMMA  SUKUN  SHADDA  TANWIN_FATHA  ...
-Tajweed:   GHUNNA  IDGHAM  IKHFA  MADD  QALQALAH  MEEM_IDGHAM  ...
-```
+The phoneme vocabulary encodes standard Arabic phonemes, diacritics, and Tajweed rule markers, e.g. `ALEF`, `BEH`, `FATHA`, `KASRA`, `GHUNNA`, `IDGHAM`, `MADD`, `QALQALAH`.
 
 ---
 
-## 🧪 Testing
-
-### Backend
+## Testing
 
 ```bash
+# Backend
 cd backend
-
-# Full test suite
 pytest -v
+python run_tests.py        # quick integrity checks
 
-# Quick integrity checks (imports, password hashing)
-python run_tests.py
-```
-
-### Frontend
-
-```bash
+# Frontend
 cd frontend
-
-# All tests
 flutter test
-
-# Specific test
-flutter test test/streak_test.dart
-
-# Static analysis
 flutter analyze
 ```
 
-### CI/CD
-
-Backend tests run automatically on every push and pull request to `main` via GitHub Actions (`.github/workflows/backend-ci.yml`).
+Backend tests run automatically on every push/PR to `main` via GitHub Actions.
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Here's how to get started:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### Development Guidelines
-
-- Backend code follows PEP 8 conventions
-- Frontend follows Dart/Flutter style guidelines (`flutter analyze` must pass)
-- All new backend features should include pytest coverage
-- WebSocket protocol changes must be backward-compatible
-
----
-
-## ⚠️ Known Limitations
+## Known Limitations
 
 | Area | Limitation |
 |:---|:---|
-| **Fallback Engine** | `FallbackCalculatedEngine` (no model loaded) uses audio energy heuristics — no real ASR |
-| **Audio Cache** | Basic LRU pruning at 200 MB; no background cleanup |
-| **Demo Endpoint** | `/api/audio/demo/audio` uses hardcoded paths; won't work in containers without volume mounts |
-| **Web Platform** | Prayer times & Qibla require HTTPS + device sensors (GPS, compass) |
-| **Single Reciter** | Model trained on abdulsamad reciter only; multi-reciter generalization not evaluated |
+| Fallback engine | Without a loaded model, the backend uses an audio-energy heuristic — not real ASR |
+| Audio cache | Basic 200MB LRU-style pruning, no background cleanup job |
+| Demo endpoint | Uses hardcoded local paths; won't work in containers without volume mounts |
+| Web platform | Prayer times & Qibla need HTTPS and device sensors (GPS, compass) |
+| Reciter coverage | Model trained on a single reciter (Abdulsamad); multi-reciter generalization untested |
+| License | No LICENSE file currently included in this repository |
 
 ---
 
-## 📄 License
+## Data & Third-Party Sources
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project builds on the following external resources, credited here for transparency and academic attribution:
 
----
+- **Base model:** [`facebook/wav2vec2-xls-r-300m`](https://huggingface.co/facebook/wav2vec2-xls-r-300m), released by Meta AI, fine-tuned for this project on Tajweed-labeled Quranic audio.
+- **Training audio:** [EveryAyah.com](https://everyayah.com/) — verse-by-verse Quranic recitation audio (Abdulsamad reciter), used for training and word-audio playback.
+- **Quran text:** [Tanzil.net](https://tanzil.net/) — Uthmani script with diacritics, used as ground truth for phoneme alignment and the in-app reader.
+- **ML tooling:** [HuggingFace Transformers](https://huggingface.co/) (model training/inference), [jiwer](https://github.com/jitsi/jiwer) (WER/PER alignment).
 
-## 🙏 Acknowledgments
-
-- [**EveryAyah.com**](https://everyayah.com/) — Quranic audio dataset
-- [**Tanzil.net**](https://tanzil.net/) — Verified Uthmani Quran text
-- [**HuggingFace**](https://huggingface.co/) — Transformers library and XLS-R model
-- [**Facebook AI**](https://ai.meta.com/) — XLS-R 300M base model
-- [**jiwer**](https://github.com/jitsi/jiwer) — Word/phoneme error rate alignment
+The Tajweed phoneme vocabulary, G2P pipeline, alignment logic, backend, and frontend are original work developed for this project.
 
 ---
 
-<p align="center">
-  <strong>Built with ❤️ as a Final Year Project</strong>
-  <br />
-  <sub>If this project helped you, please consider giving it a ⭐</sub>
-</p>
+<p align="center"><sub>Final Year Project</sub></p>
