@@ -55,13 +55,91 @@ The core acoustic model is fine-tuned from [XLS-R 300M](https://huggingface.co/f
 5. **Tajweed Error Classification** → The system detects mismatches, categorizes mistakes (e.g. Qalqalah, Madd elongation, or basic pronunciation mistakes), and returns word-by-word correctness, error tags, and tips.
 
 ---
+# 🕌 Tilawah AI — System Architecture
 
-## 🏗️ Architecture
+<p align="center"><i>AI-powered Quran recitation practice — real-time Tajweed feedback from a trained Wav2Vec2 model.</i></p>
 
-<p align="center">
-  <img src="docs/assets/architecture.png" alt="Tilawah AI Architecture" width="100%" />
-</p>
+---
 
+```mermaid
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#ffffff",
+    "primaryBorderColor": "#185FA5",
+    "primaryTextColor": "#042C53",
+    "lineColor": "#888780",
+    "fontFamily": "Trebuchet MS, sans-serif",
+    "fontSize": "15px"
+  },
+  "flowchart": { "curve": "basis", "nodeSpacing": 40, "rankSpacing": 60 }
+}}%%
+flowchart TD
+    MIC(["🎙️ User recitation"]) --> RE
+
+    subgraph Client["📱  FLUTTER MOBILE APP"]
+        direction LR
+        RE["🎤 Recitation Engine\ncaptures & streams audio"]
+        UI["🎨 Theme-Responsive UI\nadaptive light / dark"]
+        HV["💾 Hive Cache\noffline-first storage"]
+        PS["🧭 Prayer & Qibla\nsensor-based direction"]
+    end
+
+    RE ==>|"WebSocket · base64 audio"| WS
+
+    subgraph Server["⚡  FASTAPI BACKEND"]
+        direction LR
+        WS(["🔌 WebSocket Route"])
+        TA["🧠 Tajweed Analysis\nscoring orchestrator"]
+        AUTH["🔒 Firebase Auth\nJWT verification"]
+        API["📡 REST Endpoints\nprofile & history"]
+        WS --> TA
+    end
+
+    TA ==>|"phoneme alignment"| W2V
+    UI -.->|"HTTPS"| API
+
+    subgraph ML["🧠  ML INFERENCE PIPELINE"]
+        direction LR
+        W2V["🎵 Wav2Vec2\nXLS-R 300M encoder"]
+        VOC["🔤 Phoneme Vocab\n80 Tajweed symbols"]
+        W2V --> VOC
+    end
+
+    TA ==>|"read / write"| DB
+    TA -.->|"session state"| RD
+
+    subgraph Data["🗄️  DATA LAYER"]
+        direction LR
+        DB[("PostgreSQL\nusers & history")]
+        RD[("Redis\nsessions & sockets")]
+    end
+
+    VOC -->|"Tajweed score"| FB(["✅ Live feedback to user"])
+
+    classDef client fill:#E6F1FB,stroke:#185FA5,stroke-width:1.5px,color:#042C53,rx:10,ry:10;
+    classDef server fill:#E1F5EE,stroke:#0F6E56,stroke-width:1.5px,color:#04342C,rx:10,ry:10;
+    classDef ml fill:#FAEEDA,stroke:#854F0B,stroke-width:1.5px,color:#412402,rx:10,ry:10;
+    classDef data fill:#EEEDFE,stroke:#534AB7,stroke-width:1.5px,color:#26215C,rx:10,ry:10;
+    classDef endpoint fill:#EAF3DE,stroke:#3B6D11,stroke-width:2px,color:#173404,font-weight:bold;
+
+    class RE,UI,HV,PS client;
+    class WS,TA,AUTH,API server;
+    class W2V,VOC ml;
+    class DB,RD data;
+    class MIC,FB endpoint;
+
+    linkStyle default stroke:#888780,stroke-width:1.5px;
+```
+
+### Legend
+
+| Layer | Color | Responsibility |
+|---|---|---|
+| 📱 Client | Blue | Flutter UI, audio capture, offline cache, sensors |
+| ⚡ Server | Teal | FastAPI routing, auth, Tajweed orchestration |
+| 🧠 ML | Amber | Wav2Vec2 inference & phoneme decoding |
+| 🗄️ Data | Purple | PostgreSQL persistence, Redis session/socket state |
 ---
 
 ## ✨ Features
@@ -261,9 +339,6 @@ flutter run --dart-define=API_BASE_URL=http://192.168.1.100:8000
 | `POST` | `/api/auth/register` | ❌ | Register new account |
 | `POST` | `/api/auth/login` | ❌ | Authenticate and get JWT |
 | `GET` | `/api/auth/me` | ✅ | Fetch active user information |
-| `POST` | `/api/auth/forgot-password` | ❌ | Request password reset OTP |
-| `POST` | `/api/auth/verify-otp` | ❌ | Confirm correctness of OTP code |
-| `POST` | `/api/auth/reset-password` | ❌ | Reset user password using verified OTP |
 | `PUT` | `/api/users/profile` | ✅ | Edit user bio, name, or avatar |
 | `GET` | `/api/users/stats` | ✅ | Fetch user statistics (sessions, accuracy, streaks, XP) |
 | `GET` | `/api/audio/word/{surah}/{ayah}/{word_index}` | ✅ | Fetch specific word audio clip (cached proxy) |
@@ -349,14 +424,8 @@ flutter test
 ## ⚠️ Academic & System Limitations
 
 * **Fallback Engine**: Without loading model weights (`MODEL_PATH`), the system falls back to an audio-energy heuristic. This does not perform real ASR but facilitates frontend workflow testing.
-* **Cached Files Pruning**: The local audio cache has a hard limit of 200MB, executing an oldest-first pruning sequence on cache misses.
 * **Speaker Generalization Frontiers**: Although the acoustic model is trained on a multi-reciter dataset (~120k samples, 33 speakers), generalizing studio-quality recordings to noisy "in-the-wild" environments (and non-native, female, or child reciters) remains an active area of research.
 
----
-
-## 📄 License
-
-This project is open-source and licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ---
 
